@@ -1,37 +1,32 @@
-name: Angular CI with SonarCloud
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
 
 jobs:
-  build-and-analyze:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Use Node.js 22
+    - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '22'
+        node-version: '16'
 
     - name: Install dependencies
       run: npm install
 
-    - name: Build Angular app
-      run: npm run build -- --prod
-
-    - name: SonarCloud Analysis
-      uses: sonarsource/sonarcloud-github-action@v1
-      with:
-        projectKey: "Mariamfrm_angular"
-        organization: "Mariamfrm"
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Run linting
+      run: npm run lint
 
     - name: Run tests
-      run: npm test -- --watch=false --browsers=ChromeHeadless
+      run: npm test
+
+    - name: Build project
+      run: npm run build
