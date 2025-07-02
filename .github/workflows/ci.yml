@@ -1,32 +1,46 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
     branches:
       - main
   pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-analyze:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: npm install
+ 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
 
-    - name: Run linting
-      run: npm run lint
+ 
+      - name: Install dependencies
+        run: npm install
 
-    - name: Run tests
-      run: npm test
+    
+      - name: Run tests
+        run: npm test
 
-    - name: Build project
-      run: npm run build
+  
+      - name: Build Angular App
+        run: npm run build -- --prod
+
+
+      - name: Install SonarScanner
+        run: npm install -g sonar-scanner
+
+
+      - name: Run SonarCloud analysis
+        run: sonar-scanner
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
