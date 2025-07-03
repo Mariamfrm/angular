@@ -1,6 +1,6 @@
 name: Angular CI/CD with SonarCloud
 
-on:
+on: 
   push: 
     branches:
       - main 
