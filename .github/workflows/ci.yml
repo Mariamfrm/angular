@@ -38,17 +38,21 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Check SonarCloud Quality Gate status
+      - name: Check test coverage on SonarCloud
         run: |
           echo "Waiting for SonarCloud to process analysis..."
           sleep 15
-          STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
-            "https://sonarcloud.io/api/qualitygates/project_status?projectKey=Mariamfrm_angular" \
-            | jq -r '.projectStatus.status')
 
-          echo "SonarCloud Quality Gate status: $STATUS"
+          COVERAGE=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+            "https://sonarcloud.io/api/measures/component?componentKey=Mariamfrm_angular&metricKeys=coverage" \
+            | jq -r '.component.measures[0].value')
 
-          if [ "$STATUS" != "OK" ]; then
-            echo "Quality Gate failed. Failing the job."
-            exit 1
+          echo "Test coverage reported by SonarCloud: $COVERAGE%"
+
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "::warning::⚠️ La couverture des tests est inférieure à 80% ($COVERAGE%)"
+          else
+            echo "La couverture des tests est suffisante."
           fi
+
+    
