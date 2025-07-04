@@ -5,10 +5,10 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']  // Corrigé de styleUrl à styleUrls
+  styleUrls: ['./app.css']  
 })
 export class App {
   protected title = 'hello-world-angular';
 
-  private unusedVariable = 42;  // ⚠️ variable inutilisée = Sonar va l’alerter
+  private unusedVariable = 42;  
 }
