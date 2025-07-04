@@ -59,7 +59,7 @@ jobs:
           echo "Test coverage reported by SonarCloud: $COVERAGE%"
 
           if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "::error::❌ La couverture des tests est inférieure à 80% ($COVERAGE%). Échec du pipeline."
+            echo "::error::❌ La couverture des tests est inférieure à 80% ($COVERAGE%)"
             exit 1
           else
             echo "✅ Couverture suffisante : $COVERAGE%"
