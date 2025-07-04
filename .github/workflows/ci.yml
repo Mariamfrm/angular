@@ -38,3 +38,17 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Check SonarCloud Quality Gate status
+        run: |
+          echo "Waiting for SonarCloud to process analysis..."
+          sleep 15
+          STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" \
+            "https://sonarcloud.io/api/qualitygates/project_status?projectKey=Mariamfrm_angular" \
+            | jq -r '.projectStatus.status')
+
+          echo "SonarCloud Quality Gate status: $STATUS"
+
+          if [ "$STATUS" != "OK" ]; then
+            echo "Quality Gate failed. Failing the job."
+            exit 1
+          fi
